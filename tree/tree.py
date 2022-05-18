@@ -21,6 +21,13 @@ class Tree:
         print(root.data)
         Tree.preOrder(root.rightChild)
 
+    def PostOrder(root):
+        if not root:
+            return
+        Tree.preOrder(root.leftChild)
+        Tree.preOrder(root.rightChild)
+        print(root.data)
+
 bst=Tree("Drink")
 leftnode=Tree("hot")
 rightnode=Tree("cold")
@@ -29,6 +36,7 @@ bst.rightChild=rightnode
 
 bst.preOrder()
 bst.InOrder()
+bst.PostOrder()
 
 
 
