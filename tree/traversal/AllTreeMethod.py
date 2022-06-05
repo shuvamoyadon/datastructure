@@ -47,21 +47,6 @@ def prnt_lvl_without_recursion_stack_inorder(root):
                 curr = curr.right
 
 
-def test(root):
-    curr=root
-    pre=root
-    while curr:
-        #print('i',curr.data)
-        if curr.left is not None:
-            curr = curr.left
-            print(curr.data)
-        else:
-            print('hi')
-            curr=pre.left
-            pre=curr.left
-            #pre=curr.right
-            print('p',curr.data)
-
 def prnt_lvl_without_recursion_stack_preorder(root):
     curr=root
     while curr:
@@ -136,6 +121,152 @@ def ConstructTreeFromInorderAndPredorder(inord,pre,n):
     #print(Nd.data)
     printInorder(Nd)
 
+#########################################################
+
+def construct(start,end,pre,Pindex,d):
+    ## base case
+    if start > end:
+        return None, Pindex
+
+    #### get root from pre list and crete node
+    root=Node(pre[Pindex])
+    Pindex=Pindex+1
+
+    ### get index from inorder dictionary
+    index=d[root.data]
+
+    ## now build the left tree and right tree
+    root.left,Pindex=construct(start,index-1,pre,Pindex,d)
+    root.right,Pindex=construct(index+1,end,pre,Pindex,d)
+
+    return root,Pindex
+
+def constructTree(inorder, preorder):
+    # create a dictionary to efficiently find the index of any element in
+    # a given inorder sequence
+    d = {}
+    for i, e in enumerate(inorder):
+        d[e] = i
+
+    # `pIndex` stores the index of the next unprocessed node in a preorder sequence;
+    # start with the root node (present at 0th index)
+    pIndex = 0
+
+    ## return tuple get the first element as root
+    return construct(0, len(inorder) - 1, preorder, pIndex, d)[0]
+
+#########################################################################3
+Inx_min=-2**31
+Inx_max=2**31
+
+
+def findPostOrderFromPreorder(pre, n, minval,
+                      maxval, preIndex):
+    # If entire preorder array is traversed
+    # then return as no more element is left
+    # to be added to post order array.
+    if (preIndex[0] == n):
+        return
+
+    # If array element does not lie in
+    # range specified, then it is not
+    # part of current subtree.
+    if (pre[preIndex[0]] < minval or
+            pre[preIndex[0]] > maxval):
+        return
+
+    # Store current value, to be printed later,
+    # after printing left and right subtrees.
+    # Increment preIndex to find left and right
+    # subtrees, and pass this updated value to
+    # recursive calls.
+    val = pre[preIndex[0]]
+    preIndex[0] += 1
+
+    # All elements with value between minval
+    # and val lie in left subtree.
+    findPostOrderFromPreorder(pre, n, minval,
+                      val, preIndex)
+
+    # All elements with value between val
+    # and maxval lie in right subtree.
+    findPostOrderFromPreorder(pre, n, val,
+                      maxval, preIndex)
+
+    print(val, end=" ")
+
+#########################################################################
+a=[]
+def printPreorder(node):
+    if node is None:
+        return
+    node.data
+    printPreorder(node.left)
+    printPreorder(node.right)
+    return root
+
+def inorderTrarray(root):
+
+    if root is None:
+        return
+    inorderTrarray(root.left)
+    #print(root.data)
+    a.append(root.data)
+    inorderTrarray(root.right)
+    return a
+
+def nodeReplaceWithSuccessorAndPredecessor(root,dic):
+
+    if root is None:
+        return
+
+    #print(root.data, dic[root.data])
+    root.data = dic[root.data]
+    nodeReplaceWithSuccessorAndPredecessor(root.left,dic)
+    nodeReplaceWithSuccessorAndPredecessor(root.right, dic)
+    return root
+
+def getSumofPreviouAndNext(data):
+    le=len(data)
+    dict={}
+    for i in range(0,len(data)):
+           if i ==0:
+              curr=data[i]
+              pre =0
+              next=data[i+1]
+              sum=pre+next
+              dict[curr]=sum
+           elif(i==le-1):
+               curr = data[i]
+               pre=data[i-1]
+               next=0
+               sum = pre + next
+               dict[curr] = sum
+           else:
+               curr = data[i]
+               pre=data[i-1]
+               next=data[i+1]
+               sum = pre + next
+               dict[curr] = sum
+
+           #sm.append(sum)
+    return dict
+
+def preord(node):
+    if node is None:
+        return
+
+    print(node.data,end=" ")
+    preord(node.left)
+    preord(node.right)
+
+#########################################################################
+
+pred = [40, 30, 35, 80, 100] ## output 35 30 100 80 40
+preIndex =[0]
+findPostOrderFromPreorder(pred, len(pred), Inx_min,Inx_max,preIndex)
+print('\n#################')
+
 N=Node(1)
 N.left=Node(2)
 N.right=Node(3)
@@ -150,10 +281,34 @@ prnt_lvl_without_recursion_stack_preorder(N)
  #  2    3
 # 4   5
 
-
+print('\n#################')
 inord = [ 4, 2, 5, 1, 3 ]
 pre = [ 1, 2, 4, 5, 3]
 n = len(inord)
 printpostorderfrominorderpreorder(inord, pre, n)
 print(end="\n")
+
+print('\n#################')
 ConstructTreeFromInorderAndPredorder(inord, pre, n)
+
+print('\n#################')
+#####Another techniq from pre order and inorder using hash O(N) and O(N)
+root=constructTree(inord, pre)
+# traverse the constructed tree
+print('\nThe preorder traversal is ', end='')
+printInorder(root)
+print('\n#################')
+
+root = Node(1)  # 1
+root.left = Node(2)  # / \
+root.right = Node(3)  # 2     3
+root.left.left = Node(4)  # / \ / \
+root.left.right = Node(5)  # 4 5 6 7
+root.right.left = Node(6)
+root.right.right = Node(7)
+
+print("Node preorder")
+preord(printPreorder(root))
+pre = printPreorder(root)
+print("\n")
+preord(nodeReplaceWithSuccessorAndPredecessor(pre,getSumofPreviouAndNext(inorderTrarray(root))))
